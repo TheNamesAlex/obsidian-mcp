@@ -1,0 +1,63 @@
+name: Publish to npm
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # setup-node handles .npmrc auth config when registry-url is set
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Type check
+        run: bun x tsc --noEmit
+
+      - name: Bump patch version (skip already-tagged versions)
+        id: pkg
+        run: |
+          while true; do
+            npm version patch --no-git-tag-version
+            VERSION=$(node -p "require('./package.json').version")
+            if ! git ls-remote --tags origin "refs/tags/v${VERSION}" | grep -q .; then
+              break
+            fi
+            echo "Tag v${VERSION} already exists, bumping again..."
+          done
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Build
+        run: bun run build
+
+      - name: Commit and tag version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json
+          git commit -m "chore: bump version to ${{ steps.pkg.outputs.version }} [skip ci]"
+          git tag "v${{ steps.pkg.outputs.version }}"
+          git push origin HEAD --tags
+
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
