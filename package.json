@@ -1,5 +1,5 @@
 {
-  "name": "@TheNamesAlex/obsidian-mcp",
+  "name": "@thenamesalex/obsidian-mcp",
   "version": "0.1.0",
   "description": "MCP server for Obsidian Local REST API with LLM-wiki-oriented note organization tools",
   "type": "module",
