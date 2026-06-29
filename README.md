@@ -1,6 +1,6 @@
 # obsidian-mcp
 
-MCP (Model Context Protocol) server for Obsidian Local REST API, built for a Karpathy-style LLM wiki workflow:
+MCP (Model Context Protocol) server for Obsidian Local REST API:
 
 - plain markdown notes
 - consistent note structure (summary + tags + related notes)
@@ -73,11 +73,3 @@ OBSIDIAN_API_KEY=... OBSIDIAN_BASE_URL=http://127.0.0.1:27123 node dist/index.js
 - `patch_note`: heading/block/frontmatter patch operations
 - `move_note`: copy+delete move operation
 - `delete_note`: delete a note by vault-relative path
-
-## Suggested workflow
-
-1. Capture rough notes into `inbox/` via `create_structured_note`.
-2. Use `search_notes` to triage and identify overlaps.
-3. Move notes into durable folders with `move_note`.
-4. Add manual wiki-links in note content where needed.
-5. Remove obsolete notes with `delete_note`.
