@@ -2,6 +2,7 @@
   "name": "@thenamesalex/obsidian-mcp",
   "version": "0.1.3",
   "description": "MCP server for Obsidian Local REST API with LLM-wiki-oriented note organization tools",
+  "license": "MIT",
   "type": "module",
   "bin": {
     "obsidian-mcp": "./dist/index.js"
